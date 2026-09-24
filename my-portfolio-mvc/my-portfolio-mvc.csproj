@@ -1,0 +1,27 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>my_portfolio_mvc</RootNamespace>
+    <UserSecretsId>5368387f-c3e6-4dff-a88e-51a81583b89b</UserSecretsId>
+    <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\images\projects\2\**" />
+    <Content Remove="wwwroot\images\projects\2\**" />
+    <EmbeddedResource Remove="wwwroot\images\projects\2\**" />
+    <None Remove="wwwroot\images\projects\2\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.1-preview.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Views\Contact\" />
+  </ItemGroup>
+
+</Project>

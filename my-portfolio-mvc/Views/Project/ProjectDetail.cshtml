@@ -1,0 +1,457 @@
+﻿@using my_portfolio_mvc.ViewModels.Project;
+
+@model ProjectViewModel
+
+@{
+    ViewData["Title"] = Model.Title;
+
+    var screenshots = Model.ScreenshotUrls?
+        .Where(x => !string.IsNullOrWhiteSpace(x))
+        .Take(6)
+        .ToList() ?? new List<string>();
+
+
+}
+
+<section class="project-detail py-5 py-lg-6">
+    <div class="container">
+
+        <!-- =====================================================
+         PROJECT HEADER
+         ===================================================== -->
+
+        <div class="project-detail-header mb-5">
+
+            <a asp-controller="Project"
+               asp-action="ProjectsList"
+               class="project-back d-inline-flex align-items-center gap-2 text-decoration-none mb-5">
+
+                <span class="project-back-arrow">←</span>
+
+                Back to Projects
+
+            </a>
+
+
+            <div class="project-detail-label mb-3">
+                Project
+            </div>
+
+
+            <h1 class="project-detail-title mb-4">
+                @Model.Title
+            </h1>
+
+
+            <p class="project-detail-intro mb-0">
+                @Model.ShortDescription
+            </p>
+
+        </div>
+
+
+        <!-- =====================================================
+ PROJECT VISUALS
+ Main Image + Screenshot Gallery
+ ===================================================== -->
+        @if (!string.IsNullOrWhiteSpace(Model.ThumbnailImageUrl) ||
+             screenshots.Any())
+        {
+            <div class="project-images-layout row g-5 align-items-stretch">
+
+                <!-- MAIN PROJECT IMAGE -->
+                <div class="col-lg-8">
+
+                    <div class="project-detail-image">
+
+                        @if (!string.IsNullOrWhiteSpace(Model.ThumbnailImageUrl))
+                        {
+                            <img id="main-project-image"
+                                 src="@Model.ThumbnailImageUrl"
+                                 alt="@Model.Title project screenshot"
+                                 loading="eager" />
+                        }
+                        else
+                        {
+                            <div class="project-image-empty">
+                                <span>No images</span>
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+
+                <!-- SCREENSHOT GALLERY -->
+                <div class="col-lg-4">
+
+                    <div class="project-screenshots">
+
+                        <div class="project-screenshots-header">
+                            Screenshots
+                        </div>
+
+                        @if (screenshots.Any())
+                        {
+                            <div class="project-screenshot-grid">
+
+                                @foreach (var screenshotUrl in screenshots)
+                                {
+                                    <button type="button"
+                                            class="project-screenshot-button"
+                                            data-project-image="@screenshotUrl"
+                                            data-project-title="@Model.Title"
+                                            aria-label="View project screenshot">
+
+                                        <img src="@screenshotUrl"
+                                             alt="@Model.Title screenshot"
+                                             loading="lazy" />
+
+                                    </button>
+                                }
+
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="project-screenshots-empty">
+                                <span>No images</span>
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </div>
+        }
+
+
+        <!-- =====================================================
+         PROJECT CONTENT
+         ===================================================== -->
+
+        <div class="row g-5 g-xl-6 align-items-start">
+
+            <!-- =================================================
+             MAIN CONTENT
+             ================================================= -->
+
+            <main class="col-lg-8 project-detail-main">
+
+
+                <!-- Overview -->
+
+                <section class="project-detail-section">
+
+                    <span class="detail-section-label">
+                        Overview
+                    </span>
+
+                    <h2>
+                        About this project
+                    </h2>
+
+                    <p>
+                        @Model.LongDescription
+                    </p>
+
+                </section>
+
+
+                <!-- Technologies -->
+                @if (Model.Technologies != null &&
+                                 Model.Technologies.Any())
+                {
+                    <section class="project-detail-section">
+
+                        <span class="detail-section-label">
+                            Technologies
+                        </span>
+
+                        <h2>
+                            Built with
+                        </h2>
+
+                        <div class="d-flex flex-wrap gap-2">
+
+                            @foreach (var technology in Model.Technologies)
+                            {
+                                <span class="technology-item">
+                                    @technology
+                                </span>
+                            }
+
+                        </div>
+
+                    </section>
+                }
+
+
+                <!-- Skills -->
+                @if (Model.Skills != null &&
+                                 Model.Skills.Any())
+                {
+                    <section class="project-detail-section">
+
+                        <span class="detail-section-label">
+                            Skills
+                        </span>
+
+                        <h2>
+                            What this project demonstrates
+                        </h2>
+
+                        <div class="d-grid gap-2">
+
+                            @foreach (var skill in Model.Skills)
+                            {
+                                <div class="project-skill">
+
+                                    <span class="project-skill-marker"></span>
+
+                                    <span>
+                                        @skill
+                                    </span>
+
+                                </div>
+                            }
+
+                        </div>
+
+                    </section>
+                }
+
+            </main>
+
+
+            <!-- =================================================
+             PROJECT INFORMATION SIDEBAR
+             ================================================= -->
+
+            <aside class="col-lg-4">
+
+                <div class="project-detail-sidebar">
+
+                    <div class="project-info-card">
+
+                        <!-- Project -->
+
+                        <div class="project-info-item">
+
+                            <span>
+                                Project
+                            </span>
+
+                            <strong>
+                                @Model.Title
+                            </strong>
+
+                        </div>
+
+
+                        <!-- Created -->
+                        @if (Model.CreatedAt != default)
+                        {
+                            <div class="project-info-item">
+
+                                <span>
+                                    Created
+                                </span>
+
+                                <strong>
+                                    @Model.CreatedAt.ToString("MMMM yyyy")
+                                </strong>
+
+                            </div>
+                        }
+
+
+                        <!-- Technologies Count -->
+                        @if (Model.Technologies != null &&
+                                                 Model.Technologies.Any())
+                        {
+                            <div class="project-info-item">
+
+                                <span>
+                                    Technologies
+                                </span>
+
+                                <strong>
+                                    @Model.Technologies.Count
+                                </strong>
+
+                            </div>
+                        }
+
+
+                        <!-- Skills Count -->
+                        @if (Model.Skills != null &&
+                                                 Model.Skills.Any())
+                        {
+                            <div class="project-info-item">
+
+                                <span>
+                                    Skills
+                                </span>
+
+                                <strong>
+                                    @Model.Skills.Count
+                                </strong>
+
+                            </div>
+                        }
+
+
+                        <!-- Screenshots Count -->
+                        @if (screenshots.Any())
+                        {
+                            <div class="project-info-item">
+
+                                <span>
+                                    Screenshots
+                                </span>
+
+                                <strong>
+                                    @screenshots.Count
+                                </strong>
+
+                            </div>
+                        }
+
+
+                        <!-- Links -->
+                        @if (!string.IsNullOrWhiteSpace(Model.GithubUrl) ||
+                                                 !string.IsNullOrWhiteSpace(Model.LiveDemoUrl))
+                        {
+                            <div class="project-info-actions">
+
+                                @if (!string.IsNullOrWhiteSpace(Model.GithubUrl))
+                                {
+                                    <a href="@Model.GithubUrl"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn button project-link-button">
+
+                                        GitHub
+
+                                        <span>↗</span>
+
+                                    </a>
+                                }
+
+                                <div class="input-group">
+                                    <a href="@Model?.LiveDemoUrl"
+                                       target="_blank"
+                                       rel="noopener noreferrer"
+                                       class="btn btn-teal px-4">
+
+                                        Proof
+
+                                        <span>↗</span>
+
+                                    </a>
+                                    <input type="text"
+                                           id="proof-value"
+                                           class="form-control border-secondary-subtle shadow-none"
+                                           value="@Model?.LiveDemoUrl"
+                                           placeholder="Project url..."
+                                           disabled />                                   
+                                </div>
+
+                            </div>
+                        }
+
+                    </div>
+
+                </div>
+
+            </aside>
+
+        </div>
+
+
+        <!-- =====================================================
+         PROJECT FOOTER NAVIGATION
+         ===================================================== -->
+
+        <div class="project-detail-footer">
+
+            <a asp-controller="Project"
+               asp-action="ProjectsList"
+               class="project-back">
+
+                <span class="project-back-arrow">
+                    ←
+                </span>
+
+                Back to all projects
+
+            </a>
+
+        </div>
+
+    </div>
+
+</section>
+
+@section Scripts {
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const mainImage =
+                document.getElementById("main-project-image");
+
+            const screenshotButtons =
+                document.querySelectorAll(
+                    ".project-screenshot-button"
+                );
+
+            if (!mainImage || !screenshotButtons.length) {
+                return;
+            }
+
+
+            screenshotButtons.forEach(function(button) {
+
+                button.addEventListener("click", function() {
+
+                    const imageUrl =
+                        button.getAttribute("data-project-image");
+
+                    const projectTitle =
+                        button.getAttribute("data-project-title");
+
+                    if (!imageUrl) {
+                        return;
+                    }
+
+
+                    // Change main image
+                    mainImage.src = imageUrl;
+
+                    if (projectTitle) {
+                        mainImage.alt =
+                            projectTitle + " project screenshot";
+                    }
+
+
+                    // Update active thumbnail
+                    screenshotButtons.forEach(function(item) {
+
+                        item.classList.remove("active");
+
+                    });
+
+                    button.classList.add("active");
+
+                });
+
+            });
+
+        });
+    </script>
+
+}

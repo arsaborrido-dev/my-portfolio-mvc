@@ -1,0 +1,6 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".gitignore" />
+  </Folder>
+  <Project Path="my-portfolio-mvc/my-portfolio-mvc.csproj" />
+</Solution>

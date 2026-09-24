@@ -1,0 +1,726 @@
+﻿@using my_portfolio_mvc.ViewModels.Home;
+
+@model HomeViewModel
+
+@{
+    ViewData["Title"] = "Portfolio";
+}
+
+<!-- HERO --> 
+<section id="home" class="hero">
+
+    <div class="container-fluid p-0">
+
+        <div class="row g-0 min-vh-100">
+
+            <!-- Hero Content -->
+
+            <div class="col-lg-6 d-flex align-items-center">
+
+                <div class="hero-content w-100">
+
+                    <p class="hero-label">
+                        Software Developer
+                    </p>
+
+                    <h1 class="hero-name">
+
+                        <span class="first-name">
+                            Chao <span class="divider">|</span>
+                        </span>
+
+                        <span class="last-name">
+                            Saborrido
+                        </span>
+
+                    </h1>
+
+                    <p class="hero-text">
+                        I build reliable software, APIs, integrations, and
+                        data solutions with a focus on simplicity,
+                        performance, and maintainability.
+                    </p>
+
+                    <div class="d-flex flex-wrap gap-2">
+
+                        <a asp-controller="Project"
+                           asp-action="ProjectsList"
+                           class="btn button">
+
+                            View All Projects
+
+                        </a>
+
+                        <a href="#contact"
+                           class="btn button button-secondary">
+
+                            Contact Me
+
+                        </a>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+            <!-- Hero Image -->
+
+            <div class="col-lg-6">
+
+                <div class="hero-image"
+                     role="img"
+                     aria-label="Professional portrait">
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section> 
+
+<!-- ABOUT -->
+<section id="about" class="section about">
+    <div class="container">
+
+        <div class="section-header">
+
+            <span class="section-label">
+                01 — About
+            </span>
+
+            <h2 class="section-title">
+                Building practical solutions with technology.
+            </h2>
+
+        </div>
+
+
+        <div class="row g-5 align-items-start">
+
+            <!-- About Text -->
+
+            <div class="col-lg-6">
+
+                <div class="about-text">
+
+                    <p>
+                        Hello, I'm Chao. I'm a software developer who
+                        enjoys turning business requirements into
+                        practical, reliable technology solutions.
+                    </p>
+
+                    <p>
+                        My experience includes application development,
+                        data integration, reporting, APIs, and backend
+                        systems. I value clean code, thoughtful design,
+                        and solutions that are easy to maintain.
+                    </p>
+
+                    <p>
+                        This portfolio is designed to grow alongside my
+                        projects and can later be connected directly to
+                        my own APIs.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <!-- About Details -->
+
+            <div class="col-lg-6">
+
+                <div class="row g-3">
+
+                    <div class="col-sm-6">
+
+                        <div class="detail-card h-100">
+
+                            <strong>Focus</strong>
+
+                            <span>
+                                Backend & Web Development
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+
+                        <div class="detail-card h-100">
+
+                            <strong>Specialty</strong>
+
+                            <span>
+                                APIs & Data Integration
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+
+                        <div class="detail-card h-100">
+
+                            <strong>Approach</strong>
+
+                            <span>
+                                Simple & Maintainable
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                    <div class="col-sm-6">
+
+                        <div class="detail-card h-100">
+
+                            <strong>Portfolio</strong>
+
+                            <span>
+                                Continuously Evolving
+                            </span>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section> 
+
+<!-- SKILLS --> 
+<section id="skills" class="section">
+    <div class="container">
+
+        <div class="section-header">
+
+            <span class="section-label">
+                02 — Skills
+            </span>
+
+            <h2 class="section-title">
+                Technologies I work with.
+            </h2>
+
+            <p class="section-description">
+                Technologies and tools I use to build applications,
+                APIs, integrations, and data solutions.
+            </p>
+
+        </div>
+
+
+        <div class="row g-3">
+
+            @if (Model?.Skills != null && Model.Skills.Any())
+            {
+                foreach (var skill in Model.Skills)
+                {
+                    <div class="col-12 col-sm-6 col-lg-4 col-xl">
+
+                        <div class="skill-card h-100">
+
+                            @skill.Name
+
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+
+                    <div class="loading">
+                        No skills available yet.
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</section> 
+
+<!-- FEATURED PROJECTS --> 
+<section id="featuredprojects" class="section projects">
+    <div class="container">
+
+        <div class="section-header">
+
+            <span class="section-label">
+                03 — Featured Projects
+            </span>
+
+            <h2 class="section-title">
+                Selected work.
+            </h2>
+
+            <p class="section-description">
+                A selection of projects and technical solutions.
+            </p>
+
+        </div>
+
+        <div class="row g-4">
+
+            @if (Model?.FeaturedProjects != null && Model.FeaturedProjects.Any())
+            {
+                for (int i = 0; i < Model.FeaturedProjects.Count; i++)
+                {
+                    var project = Model.FeaturedProjects[i];
+
+                    <div class="col-12 col-md-6 col-xl-4">
+
+                        <article class="project-card h-100">
+
+                            <span class="project-number">
+                                @((i + 1).ToString("D2"))
+                            </span>
+
+                            @if (!string.IsNullOrWhiteSpace(
+                                project.ThumbnailImageUrl))
+                            {
+                                <img src="@project.ThumbnailImageUrl"
+                                     alt="@project.Title"
+                                     class="project-thumb" />
+                            }
+
+                            <h3>
+                                @project.Title
+                            </h3>
+
+                            <p>
+                                @project.ShortDescription
+                            </p>
+
+                            @if (project.Skills != null && project.Skills.Any())
+                            {
+                                <div class="project-tags">
+
+                                    @foreach (var skill in project.Skills)
+                                    {
+                                        <span class="tag">
+                                            @skill
+                                        </span>
+                                    }
+
+                                </div>
+                            }
+
+
+                            <div class="project-actions">
+
+                                <a asp-controller="Project"
+                                   asp-action="ProjectDetail"
+                                   asp-route-id="@project.Id"
+                                   class="btn button button-secondary">
+
+                                    View Details
+
+                                </a>
+
+                                <a asp-controller="Project"
+                                   asp-action="ProjectsList"
+                                   class="view-all-link">
+
+                                    View All Projects
+
+                                </a>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+
+                    <div class="loading">
+                        No projects available yet.
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+    </div>
+
+</section> 
+
+<!-- CONTACT --> 
+<section id="contact" class="section">
+    <div class="container">
+
+        <div class="row g-5 align-items-start">
+
+            <!-- Contact Information -->
+
+            <div class="col-lg-6">
+
+                <div class="section-header mb-4">
+
+                    <span class="section-label">
+                        04 — Contact
+                    </span>
+
+                    <h2 class="section-title">
+                        Let's connect.
+                    </h2>
+
+                    <p class="contact-text">
+                        Interested in working together or simply
+                        want to say hello? Feel free to reach out.
+                    </p>
+
+                </div>
+
+
+                <ul class="contact-list">
+
+                    <li>
+
+                        <span>Email</span>
+
+                        <a href="mailto:your.email@example.com">
+                            your.email@example.com
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <span>LinkedIn</span>
+
+                        <a href="#"
+                           target="_blank"
+                           rel="noopener">
+
+                            LinkedIn Profile
+
+                        </a>
+
+                    </li>
+
+                    <li>
+
+                        <span>GitHub</span>
+
+                        <a href="#"
+                           target="_blank"
+                           rel="noopener">
+
+                            GitHub Profile
+
+                        </a>
+
+                    </li>
+
+                </ul>
+
+            </div>
+
+            <div class="col-lg-6">
+                <form asp-controller="Home" 
+                      asp-action="SendContactMessage"                     
+                      method="post" 
+                      class="contact-form" 
+                      id="contact-form">                        
+                        
+                    @Html.AntiForgeryToken()
+                    
+                    <div class="mb-3">
+                        <div class="form-group">
+
+                            <label for="contact_name"
+                                   class="form-label">
+
+                                Name
+
+                            </label>
+
+                            <input asp-for="ContactMessage.Name"
+                                   type="text"
+                                   id="contact_name"
+                                   class="form-control"
+                                   placeholder="Your name"
+                                   required />
+                        </div>
+                    </div>
+
+
+                    <div class="mb-3">
+                        <div class="form-group">
+
+                            <label for="contact_email"
+                                   class="form-label">
+
+                                Email
+
+                            </label>
+
+                            <input asp-for="ContactMessage.Email" 
+                                   type="email"
+                                   id="contact_email"
+                                   class="form-control"
+                                   placeholder="you@example.com"
+                                   required />
+                        </div>
+
+                    </div>
+
+
+                    <div class="mb-4">
+                        <div class="form-group">
+
+                            <label for="contact_message"
+                                   class="form-label">
+
+                                Message
+
+                            </label>
+
+                            <textarea asp-for="ContactMessage.Message" 
+                                id="contact_message"
+                                class="form-control"
+                                rows="5"
+                                placeholder="Your message..."
+                                required></textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- CAPTCHA widget placeholder -->
+                    <div class="cf-turnstile"
+                         data-sitekey="0x4AAAAAAExxBiDW5MlG0Meu"
+                         data-callback="onCaptchaCompleted">
+                    </div>
+
+                    <div class="mb-3">
+                        <!-- Example: Cloudflare Turnstile or Google reCAPTCHA script + widget -->
+                        <input asp-for="ContactMessage.CaptchaToken" 
+                               type="hidden"/>
+                    </div>
+
+                    <button type="submit"
+                            class="btn button">
+
+                        Send Message
+
+                    </button>
+
+                </form>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal fade" 
+         id="contactSuccessModal" 
+         tabindex="-1" 
+         aria-labelledby="contactSuccessLabel" 
+         aria-hidden="true">
+
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+
+                <div class="modal-header bg-success text-white">
+                    <h5 class="modal-title" 
+                        id="contactSuccessLabel">
+                        Message Sent
+                    </h5>
+                    <button type="button" 
+                            class="btn-close btn-close-white" 
+                            data-bs-dismiss="modal" 
+                            aria-label="Close">
+                    </button>
+                </div>
+
+                <div class="modal-body">
+                    <p>Your message has been sent successfully. I’ll get back to you soon.</p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" 
+                            class="btn btn-success" 
+                            data-bs-dismiss="modal">
+                            Close
+                    </button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+
+
+@section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- Add your CAPTCHA JS here and set model.CaptchaToken via JS -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+
+    <script>
+
+        document.getElementById("contact-form").addEventListener("submit", async function(e) {
+
+            e.preventDefault();
+
+            const form = e.target;
+
+            if (!form.checkValidity()) {
+                form.reportValidity();
+                return;
+            }
+
+            const formData = new FormData(form);
+
+            const captchaToken =
+                formData.get("ContactMessage.CaptchaToken");
+
+            ////UNCOMMENT BELOW FOR TROUBLESHOOTING
+            // console.log(
+            //     "CAPTCHA TOKEN:", captchaToken)
+            // );
+
+            if (!captchaToken) {
+                alert("Please complete the CAPTCHA.");
+                return;
+            }
+
+            // JSON for ContactMessageViewModel
+            const payload = {
+                Name: formData.get("ContactMessage.Name"),
+                Email: formData.get("ContactMessage.Email"),
+                Message: formData.get("ContactMessage.Message"),
+                CaptchaToken: formData.get("ContactMessage.CaptchaToken")
+            };
+              
+            ////UNCOMMENT BELOW FOR TROUBLESHOOTING
+            // console.log("PAYLOAD:", payload);
+
+            try {
+
+                const response = await fetch(
+                    "@Url.Action("SendContactMessage", "Home")",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type": "application/json",
+                            "RequestVerificationToken":
+                                document.querySelector(
+                                    'input[name="__RequestVerificationToken"]'
+                                ).value
+                        },
+
+                        credentials: "include",
+
+                        body: JSON.stringify(payload)
+                    }
+                );
+
+                const result = await response.json();
+
+                ////UNCOMMENT BELOW FOR TROUBLESHOOTING
+                // console.log("SERVER RESPONSE:", result);
+
+                if (response.ok && result.success) {
+
+                    const modal = new bootstrap.Modal(
+                        document.getElementById("contactSuccessModal")
+                    );
+
+                    modal.show();
+
+                    form.reset();
+
+                    // Reset Turnstile if available
+                    if (typeof turnstile !== "undefined") {
+                        turnstile.reset();
+                    }
+
+                } else {
+
+                    ////UNCOMMENT BELOW FOR TROUBLESHOOTING
+                    // console.log("VALIDATION ERRORS:", result.validationErrors);
+
+                    console.error("Server error:", result);
+
+                    alert(
+                        result.error ||
+                        "Failed to send the message."
+                    );
+                    
+                }
+
+            } catch (error) {
+
+                ////UNCOMMENT BELOW FOR TROUBLESHOOTING
+                // console.log("ERROR:", error);
+
+                console.error("Request failed:", error);
+
+                alert(
+                    "An unexpected error occurred while sending the message."
+                );
+            }
+        });
+
+        function onCaptchaCompleted(token) {
+
+            const captchaInput =
+                document.getElementById("ContactMessage_CaptchaToken");
+
+            if (!captchaInput) {
+                console.error("CAPTCHA hidden input was not found.");
+                return;
+            }
+
+            captchaInput.value = token;
+
+            ////UNCOMMENT BELOW FOR TROUBLESHOOTING
+            // console.log("TURNSTILE TOKEN RECEIVED.");
+        }
+
+    </script>
+}
+
+@* <!-- Google captcha -->
+<script src="https://www.google.com/recaptcha/api.js" async defer></script>
+<!-- widget -->
+<div class="g-recaptcha"
+     data-sitekey="YOUR_SITE_KEY"
+     data-callback="onCaptchaCompleted">
+</div>
+<!-- callback -->
+<script>
+    function onCaptchaCompleted(token) {
+        document.getElementById("ContactMessage_CaptchaToken").value = token;
+    }
+</script> *@

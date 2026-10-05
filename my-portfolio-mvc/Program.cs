@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.DataProtection;
 using my_portfolio_mvc.Api.Clients;
 using my_portfolio_mvc.Api.Interfaces;
+using my_portfolio_mvc.Api.Middleware;
 using my_portfolio_mvc.Infrastructure.Http;
 using my_portfolio_mvc.Security.Captcha;
 using my_portfolio_mvc.Services.Implementations;
@@ -23,6 +24,7 @@ builder.Services.Configure<HttpLoggingOptions>(
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<LoggingHandler>();
+builder.Services.AddTransient<AutoRefreshHandler>();
 
 builder.Services.AddHttpClient<CaptchaService>()
     .AddHttpMessageHandler<LoggingHandler>();
@@ -35,13 +37,21 @@ builder.Services.AddHttpClient<CaptchaService>()
 //    .AddHttpMessageHandler<LoggingHandler>();
 ////.AddHttpMessageHandler<TokenRefreshHandler>();
 
+builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
+{
+    client.BaseAddress = new Uri(authApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+})
+    .AddHttpMessageHandler<LoggingHandler>();
+
 builder.Services.AddHttpClient<IProjectApiClient, ProjectApiClient>(client =>
 {
     //client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseUrl"]!);
     client.BaseAddress = new Uri(authApiUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 })
-    .AddHttpMessageHandler<LoggingHandler>();
+    .AddHttpMessageHandler<LoggingHandler>()
+    .AddHttpMessageHandler<AutoRefreshHandler>();
 
 builder.Services.AddHttpClient<ISkillApiService, SkillApiClient>(client =>
 {
@@ -49,7 +59,17 @@ builder.Services.AddHttpClient<ISkillApiService, SkillApiClient>(client =>
     client.BaseAddress = new Uri(authApiUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 })
-    .AddHttpMessageHandler<LoggingHandler>();
+    .AddHttpMessageHandler<LoggingHandler>()
+    .AddHttpMessageHandler<AutoRefreshHandler>();
+
+builder.Services.AddHttpClient<ITechnologyApiClient, TechnologyApiClient> (client =>
+{
+    //client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseUrl"]!);
+    client.BaseAddress = new Uri(authApiUrl);
+    client.Timeout = TimeSpan.FromSeconds(10);
+})
+    .AddHttpMessageHandler<LoggingHandler>()
+    .AddHttpMessageHandler<AutoRefreshHandler>();
 
 builder.Services.AddHttpClient<IContactApiClient, ContactApiClient>(client =>
 {
@@ -57,7 +77,9 @@ builder.Services.AddHttpClient<IContactApiClient, ContactApiClient>(client =>
     client.BaseAddress = new Uri(authApiUrl);
     client.Timeout = TimeSpan.FromSeconds(10);
 })
-    .AddHttpMessageHandler<LoggingHandler>();
+    .AddHttpMessageHandler<LoggingHandler>()
+    .AddHttpMessageHandler<AutoRefreshHandler>();
+
 
 //builder.Services.AddHttpClient("AuthApi", c => {
 //    c.BaseAddress = new Uri(authApiUrl);
@@ -65,8 +87,10 @@ builder.Services.AddHttpClient<IContactApiClient, ContactApiClient>(client =>
 //    .AddHttpMessageHandler<LoggingHandler>();
 //    //.AddHttpMessageHandler<TokenRefreshHandler>();
 
+//builder.Services.AddScoped<IAuthApiClient, AuthApiClient>();
 builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
+builder.Services.AddScoped<ITechnologyService, TechnologyService>();
 builder.Services.AddScoped<IContactService, ContactService>();
 builder.Services.AddScoped<ICaptchaService, CaptchaService>();
 

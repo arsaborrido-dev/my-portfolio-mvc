@@ -1,6 +1,162 @@
-﻿@{
+@{
     ViewData["Title"] = "Privacy Policy";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<section class="privacy-page">
+    <div class="container">
+
+        <header class="privacy-header">
+
+            <span class="section-label">
+                Privacy
+            </span>
+
+            <h1 class="privacy-title">
+                Privacy Policy
+            </h1>
+
+            <p class="privacy-intro">
+                I keep things simple. This portfolio is designed to collect only the
+                information you choose to provide when you reach out through the
+                “Let’s Connect” form.
+            </p>
+
+        </header>
+
+        <main class="privacy-content">
+
+            <section class="privacy-section">
+
+                <span class="privacy-section-label">
+                    01 — Information I Collect
+                </span>
+
+                <h1 class="section-title">
+                    Information you choose to send.
+                </h1>
+
+                <p>
+                    When you use the “Let’s Connect” form, you may provide your
+                    name, email address, and message. I use this information only
+                    to receive and respond to your inquiry.
+                </p>
+
+                <p>
+                    The form also uses a CAPTCHA verification service to help prevent
+                    automated or abusive submissions. This verification is a technical
+                    part of submitting the form and is not used by me for advertising
+                    or behavioral tracking.
+                </p>
+
+            </section>
+
+            <section class="privacy-section">
+
+                <span class="privacy-section-label">
+                    02 — How I Use Information
+                </span>
+
+                <h1 class="section-title">
+                    Only for communication.
+                </h1>
+                
+                <p>
+                    Information submitted through the contact form is used to
+                    communicate with you about your message. I do not sell your
+                    personal information, share it for advertising purposes, or use
+                    it for unrelated purposes.
+                </p>
+
+            </section>
+
+            <section class="privacy-section">
+
+                <span class="privacy-section-label">
+                    03 — Cookies & Authentication
+                </span>
+
+                <h1 class="section-title">
+                    Technical use only.
+                </h1>
+
+                <p>
+                    This site may use cookies and JSON Web Tokens (JWTs) for technical
+                    purposes related to the site's API and future authentication
+                    features.
+                </p>
+
+                <p>
+                    These technologies are not used by me for tracking, analytics,
+                    or advertising.
+                </p>
+
+                <div class="privacy-note">
+                    <strong>In short:</strong>
+                    the site's technical storage and authentication mechanisms are
+                    intended to help the application function, not to monitor your
+                    browsing activity.
+                </div>
+
+            </section>
+
+            <section class="privacy-section">
+
+                <span class="privacy-section-label">
+                    04 — Your Information
+                </span>
+
+                <h1 class="section-title">
+                    You can ask me to remove it.
+                </h1>
+
+                <p>
+                    If you have submitted a message and would like your information
+                    or message removed, contact me and I will delete it, subject to
+                    any information that may need to be retained for legitimate
+                    technical, security, or legal reasons.
+                </p>
+
+                <a href="@Url.Action("Index", "Home")#contact"
+                   class="privacy-contact">
+                    Get in touch →
+                </a>
+
+            </section>
+
+            <section class="privacy-section">
+
+                <span class="privacy-section-label">
+                    05 — Changes
+                </span>
+
+                <h1 class="section-title">
+                    This policy will evolve with the site.
+                </h1>
+
+                <p>
+                    As this portfolio grows, I may add features that involve user
+                    information. If that happens, I will update this policy to
+                    describe those changes.
+                </p>
+
+                <p>
+                    <strong>Last updated:</strong> September 29, 2026
+                </p>
+
+            </section>
+
+        </main>
+
+        <div class="privacy-footer">
+
+            <a asp-controller="Home"
+               asp-action="Index"
+               asp-fragment="home"
+               class="privacy-back">
+                ← Back to portfolio
+            </a>
+
+        </div>
+
+    </div>
+</section>

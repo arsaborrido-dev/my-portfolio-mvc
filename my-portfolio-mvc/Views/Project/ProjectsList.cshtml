@@ -1,4 +1,5 @@
-﻿@using my_portfolio_mvc.ViewModels.Project;
+@using my_portfolio_mvc.ViewModels.Project;
+@using my_portfolio_mvc.Security;
 
 @model ProjectsListViewModel
 
@@ -6,263 +7,180 @@
     ViewData["Title"] = "Projects";
 }
 
-<section class="py-5 py-lg-6 bg-light">
+<section class="projects-list-page py-5 py-lg-6">
     <div class="container">
 
-        <!-- =====================================================
-         PAGE HEADER
-         ===================================================== -->
-
-        <div class="mb-5">
-
+        <header class="projects-list-header">
+                        
             <a asp-controller="Home"
-               asp-action="Index"
-               asp-fragment="home"
-               class="d-inline-flex align-items-center gap-2 text-secondary text-decoration-none small fw-semibold mb-5 project-back">
+                asp-action="Index"
+                asp-fragment="home"
+                class="project-back text-decoration-none">
+                ← Back to portfolio                
+            </a>            
 
-                <span class="text-teal fs-5">←</span>
-                Back to Portfolio
-
-            </a>
-
-            <div class="text-uppercase text-teal fw-bold small letter-spacing-wide mb-3">
+            <div class="project-detail-label">
                 Projects
             </div>
 
-            <h1 class="display-3 fw-normal text-navy mb-4">
+            <h1 class="project-detail-title">
                 Selected work.
             </h1>
 
-            <p class="lead text-secondary mb-0" style="max-width: 700px;">
+            <p class="project-detail-intro">
                 A collection of projects and technical solutions I've built.
             </p>
 
-        </div>
+        </header>
+        
 
+        <div class="projects-list-toolbar d-flex flex-column flex-lg-row justify-content-between align-items-lg-end gap-4">
 
-        <!-- =====================================================
-         TOOLBAR
-         ===================================================== -->
+            <form method="get"
+                  asp-action="ProjectsList"
+                  class="projects-search flex-grow-1">
 
-        <div class="row align-items-center g-3 mb-4">
+                <div class="projects-search-wrapper input-group">
 
-            <!-- Search -->
+                    <input type="text"
+                           id="project-search"
+                           name="search"
+                           value="@Model?.Search"
+                           placeholder="Search by project name..."
+                           class="projects-search-input form-control"
+                           autocomplete="off" />
 
-            <div class="col-12 col-lg">
+                    <button type="submit"
+                            class="projects-search-button btn button">
+                        Search
+                    </button>
 
-                <form method="get"
-                      asp-action="ProjectsList"
-                      class="d-flex">
+                </div>
 
-                    <div class="input-group">
+            </form>
 
-                        <input type="text"
-                               id="project-search"
-                               name="search"
-                               value="@Model?.Search"
-                               placeholder="Search by project name..."
-                               class="form-control border-secondary-subtle shadow-none"
-                               autocomplete="off" />
-
-                        <button type="submit"
-                                class="btn btn-teal px-4">
-
-                            Search
-
-                        </button>
-
-                    </div>
-
-                </form>
-
-            </div>
-
-
-            <!-- Top Pagination -->
             @if (Model != null && Model.TotalPages > 1)
             {
-                <div class="col-12 col-lg-auto">
+                <nav class="projects-pagination projects-pagination-top"
+                     aria-label="Projects pagination">
 
-                    <nav aria-label="Projects pagination">
+                    <div class="projects-pagination-inner">
 
-                        <ul class="pagination mb-0 justify-content-lg-end">
+                        @if (Model.PageNumber > 1)
+                        {
+                            <a asp-action="ProjectsList"
+                               asp-route-page="@(Model.PageNumber - 1)"
+                               asp-route-search="@Model.Search"
+                               class="projects-pagination-button">
 
-                            @if (Model.PageNumber > 1)
-                            {
-                                <li class="page-item">
+                                ← Previous
 
-                                    <a asp-action="ProjectsList"
-                                       asp-route-page="@(Model.PageNumber - 1)"
-                                       asp-route-search="@Model.Search"
-                                       class="page-link">
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="projects-pagination-button disabled">
+                                ← Previous
+                            </span>
+                        }
 
-                                        ← Previous
-
-                                    </a>
-
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="page-item disabled">
-
-                                    <span class="page-link">
-                                        ← Previous
-                                    </span>
-
-                                </li>
-                            }
-
+                        <div class="projects-pagination-pages">
 
                             @for (int i = 1; i <= Model.TotalPages; i++)
                             {
                                 if (i == Model.PageNumber)
                                 {
-                                    <li class="page-item active"
-                                        aria-current="page">
-
-                                        <span class="page-link">
-                                            @i
-                                        </span>
-
-                                    </li>
+                                    <span class="projects-pagination-page active"
+                                          aria-current="page">
+                                        @i
+                                    </span>
                                 }
                                 else
                                 {
-                                    <li class="page-item">
-
-                                        <a asp-action="ProjectsList"
-                                           asp-route-page="@i"
-                                           asp-route-search="@Model.Search"
-                                           class="page-link">
-
-                                            @i
-
-                                        </a>
-
-                                    </li>
+                                    <a asp-action="ProjectsList"
+                                       asp-route-page="@i"
+                                       asp-route-search="@Model.Search"
+                                       class="projects-pagination-page">
+                                        @i
+                                    </a>
                                 }
                             }
 
+                        </div>
 
-                            @if (Model.PageNumber < Model.TotalPages)
-                            {
-                                <li class="page-item">
+                        @if (Model.PageNumber < Model.TotalPages)
+                        {
+                            <a asp-action="ProjectsList"
+                               asp-route-page="@(Model.PageNumber + 1)"
+                               asp-route-search="@Model.Search"
+                               class="projects-pagination-button">
 
-                                    <a asp-action="ProjectsList"
-                                       asp-route-page="@(Model.PageNumber + 1)"
-                                       asp-route-search="@Model.Search"
-                                       class="page-link">
+                                Next →
 
-                                        Next →
+                            </a>
+                        }
+                        else
+                        {
+                            <span class="projects-pagination-button disabled">
+                                Next →
+                            </span>
+                        }
 
-                                    </a>
+                    </div>
 
-                                </li>
-                            }
-                            else
-                            {
-                                <li class="page-item disabled">
-
-                                    <span class="page-link">
-                                        Next →
-                                    </span>
-
-                                </li>
-                            }
-
-                        </ul>
-
-                    </nav>
-
-                </div>
+                </nav>
             }
 
         </div>
 
-
-        <!-- =====================================================
-         PROJECT LIST
-         ===================================================== -->
         @if (Model != null && Model.ProjectViewModels.Any())
         {
-            <div class="border-top border-secondary-subtle">
+            <div class="projects-list">
 
-                <!-- Desktop List Header -->
+                <div class="projects-list-header-row row g-3 d-none d-lg-flex">
 
-                <div class="row d-none d-lg-grid py-3 px-3 border-bottom border-secondary-subtle text-uppercase small fw-bold text-secondary"
-                     style="grid-template-columns: 150px minmax(180px, .8fr) minmax(280px, 1.5fr) 150px; gap: 28px;">
-
-                    <div style="text-align: left;">
-                        Preview
-                    </div>
-
-                    <div style="text-align: left;">
-                        Project
-                    </div>
-
-                    <div style="text-align: left;">
-                        Description
-                    </div>
-
-                    <div style="text-align: left;">
-                        Links
-                    </div>
+                    <div class="col-lg-2">Preview</div>
+                    <div class="col-lg-2">Project</div>
+                    <div class="col-lg-5">Description</div>
+                    <div class="col-lg-3">Links</div>
 
                 </div>
 
-
-                <!-- Projects -->
                 @foreach (var project in Model.ProjectViewModels)
                 {
-                    <article class="row g-3 g-lg-4 align-items-start p-3 p-lg-4 border-bottom border-secondary-subtle project-list-item">
-
-                        <!-- =================================================
-                         THUMBNAIL
-                         ================================================= -->
-
-                        <div class="col-5 col-sm-4 col-lg-auto"
-                             style="width: 150px;">
+                    <article class="project-list-row row g-3 g-lg-3 align-items-center ml-2">
+                       
+                        <div class="project-list-thumbnail col-md-2 ml-2">
 
                             <a asp-controller="Project"
                                asp-action="ProjectDetail"
                                asp-route-id="@project.Id"
-                               class="d-block text-decoration-none">
+                               class="project-thumbnail-link"
+                               aria-label="View @project.Title">
 
-                                <div class="ratio ratio-4x3 overflow-hidden rounded border border-secondary-subtle bg-body-secondary project-thumbnail">
-
-                                    @if (!string.IsNullOrWhiteSpace(project.ThumbnailImageUrl))
-                                    {
-                                        <img src="@project.ThumbnailImageUrl"
-                                             alt="@project.Title"
-                                             loading="lazy"
-                                             class="w-100 h-100 object-fit-cover" />
-                                    }
-                                    else
-                                    {
-                                        <div class="d-flex align-items-center justify-content-center bg-teal-light text-secondary text-uppercase small fw-semibold">
-                                            No Image
-                                        </div>
-                                    }
-
-                                </div>
+                                @if (!string.IsNullOrWhiteSpace(project.ThumbnailImageUrl))
+                                {
+                                    <img src="@project.ThumbnailImageUrl"
+                                         alt="@project.Title"
+                                         loading="lazy" />
+                                }
+                                else
+                                {
+                                    <div class="project-thumbnail-placeholder">
+                                        No Image
+                                    </div>
+                                }
 
                             </a>
 
                         </div>
 
-
-                        <!-- =================================================
-                         TITLE
-                         ================================================= -->
-
-                        <div class="col-7 col-sm-8 col-lg"
-                             style="min-width: 180px; text-align: left;">
+                        <div class="project-list-title col-md-2">
 
                             <a asp-controller="Project"
                                asp-action="ProjectDetail"
                                asp-route-id="@project.Id"
-                               class="project-title text-navy text-decoration-none fw-semibold">
+                               class="text-decoration-none">
 
                                 @project.Title
 
@@ -270,67 +188,49 @@
 
                         </div>
 
+                        <div class="project-list-description col-md-5">
 
-                        <!-- =================================================
-                         DESCRIPTION
-                         ================================================= -->
-
-                        <div class="col-12 col-lg"
-                             style="min-width: 280px; text-align: left;">
-
-                            <p class="mb-0 text-secondary lh-lg">
-
-                                @project.ShortDescription
-
+                            <p>
+                                @HtmlSanitizerHelper.Sanitize(project.ShortDescription)
                             </p>
 
                         </div>
 
+                        <div class="project-list-links col-md-3">
 
-                        <!-- =================================================
-                         LINKS
-                         ================================================= -->
+                            @if (!string.IsNullOrWhiteSpace(project.GithubUrl))
+                            {
+                                <a href="@project.GithubUrl"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="project-list-link text-decoration-none">
 
-                        <div class="col-12 col-lg-auto"
-                             style="width: 150px; text-align: left;">
+                                    GitHub
+                                    @* <span>↗</span> *@
 
-                            <div class="d-flex flex-row flex-lg-column gap-2 align-items-start">
+                                </a>
+                            }
 
-                                @if (!string.IsNullOrWhiteSpace(project.GithubUrl))
-                                {
-                                    <a href="@project.GithubUrl"
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       class="project-list-link text-navy text-decoration-none small fw-semibold">
+                            @if (!string.IsNullOrWhiteSpace(project.LiveDemoUrl))
+                            {
+                                <a href="@project.LiveDemoUrl"
+                                   target="_blank"
+                                   rel="noopener noreferrer"
+                                   class="project-list-link text-decoration-none">
 
-                                        GitHub
-                                        <span class="text-teal">↗</span>
+                                    Live Demo
+                                    <span>↗</span>
 
-                                    </a>
-                                }
+                                </a>
+                            }
 
-                                @if (!string.IsNullOrWhiteSpace(project.LiveDemoUrl))
-                                {
-                                    <a href="@project.LiveDemoUrl"
-                                       target="_blank"
-                                       rel="noopener noreferrer"
-                                       class="project-list-link text-navy text-decoration-none small fw-semibold">
-
-                                        Live Demo
-                                        <span class="text-teal">↗</span>
-
-                                    </a>
-                                }
-
-                                @if (string.IsNullOrWhiteSpace(project.GithubUrl) &&
-                                     string.IsNullOrWhiteSpace(project.LiveDemoUrl))
-                                {
-                                    <span class="text-secondary small">
-                                        —
-                                    </span>
-                                }
-
-                            </div>
+                            @if (string.IsNullOrWhiteSpace(project.GithubUrl) &&
+                                 string.IsNullOrWhiteSpace(project.LiveDemoUrl))
+                            {
+                                <span class="project-list-no-link">
+                                    —
+                                </span>
+                            }
 
                         </div>
 
@@ -341,115 +241,96 @@
         }
         else
         {
-            <div class="card border border-secondary-subtle rounded-4 shadow-sm text-center p-5">
+            <div class="projects-list-empty">
 
-                <p class="mb-0 text-secondary">
+                <p>
                     No projects available yet.
                 </p>
 
             </div>
         }
 
-
-        <!-- =====================================================
-         BOTTOM PAGINATION
-         ===================================================== -->
         @if (Model != null && Model.TotalPages > 1)
         {
-            <nav aria-label="Projects pagination"
-                 class="d-flex justify-content-end mt-4">
+            <nav class="projects-pagination projects-pagination-bottom"
+                 aria-label="Projects pagination">
 
-                <ul class="pagination mb-0">
+                <div class="projects-pagination-inner">
 
                     @if (Model.PageNumber > 1)
                     {
-                        <li class="page-item">
+                        <a asp-action="ProjectsList"
+                           asp-route-page="@(Model.PageNumber - 1)"
+                           asp-route-search="@Model.Search"
+                           class="projects-pagination-button">
 
-                            <a asp-action="ProjectsList"
-                               asp-route-page="@(Model.PageNumber - 1)"
-                               asp-route-search="@Model.Search"
-                               class="page-link">
+                            ← Previous
 
-                                ← Previous
-
-                            </a>
-
-                        </li>
+                        </a>
                     }
                     else
                     {
-                        <li class="page-item disabled">
-
-                            <span class="page-link">
-                                ← Previous
-                            </span>
-
-                        </li>
+                        <span class="projects-pagination-button disabled">
+                            ← Previous
+                        </span>
                     }
 
+                    <div class="projects-pagination-pages">
 
-                    @for (int i = 1; i <= Model.TotalPages; i++)
-                    {
-                        if (i == Model.PageNumber)
+                        @for (int i = 1; i <= Model.TotalPages; i++)
                         {
-                            <li class="page-item active"
-                                aria-current="page">
-
-                                <span class="page-link">
+                            if (i == Model.PageNumber)
+                            {
+                                <span class="projects-pagination-page active"
+                                      aria-current="page">
                                     @i
                                 </span>
-
-                            </li>
-                        }
-                        else
-                        {
-                            <li class="page-item">
-
+                            }
+                            else
+                            {
                                 <a asp-action="ProjectsList"
                                    asp-route-page="@i"
                                    asp-route-search="@Model.Search"
-                                   class="page-link">
-
+                                   class="projects-pagination-page">
                                     @i
-
                                 </a>
-
-                            </li>
+                            }
                         }
-                    }
 
+                    </div>
 
                     @if (Model.PageNumber < Model.TotalPages)
                     {
-                        <li class="page-item">
+                        <a asp-action="ProjectsList"
+                           asp-route-page="@(Model.PageNumber + 1)"
+                           asp-route-search="@Model.Search"
+                           class="projects-pagination-button">
 
-                            <a asp-action="ProjectsList"
-                               asp-route-page="@(Model.PageNumber + 1)"
-                               asp-route-search="@Model.Search"
-                               class="page-link">
+                            Next →
 
-                                Next →
-
-                            </a>
-
-                        </li>
+                        </a>
                     }
                     else
                     {
-                        <li class="page-item disabled">
-
-                            <span class="page-link">
-                                Next →
-                            </span>
-
-                        </li>
+                        <span class="projects-pagination-button disabled">
+                            Next →
+                        </span>
                     }
 
-                </ul>
+                </div>
 
             </nav>
         }
 
-    </div>
+        <div class="privacy-footer">
 
+            <a asp-controller="Home"
+                asp-action="Index"
+                class="privacy-back">
+                ← Back to portfolio
+            </a>
+
+        </div>            
+
+    </div>
 </section>

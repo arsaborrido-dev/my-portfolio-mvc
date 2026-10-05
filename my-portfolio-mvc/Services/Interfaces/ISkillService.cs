@@ -4,7 +4,7 @@ namespace my_portfolio_mvc.Services.Interfaces
 {
     public interface ISkillService
     {
-        public Task<List<SkillViewModel>> GetAllSkillsAsync();
-        public Task<SkillViewModel?> GetSkillById(int id);
+        public Task<List<SkillsListViewModel>> GetAllSkillsAsync();
+        public Task<SkillViewModel?> GetSkillById(long id);
     }
 }

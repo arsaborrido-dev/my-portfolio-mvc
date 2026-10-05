@@ -1,6 +1,6 @@
 ﻿
 using my_portfolio_mvc.Api.Interfaces;
-using my_portfolio_mvc.Api.Models;
+using my_portfolio_mvc.Api.Models.Project;
 using my_portfolio_mvc.Services.Interfaces;
 using my_portfolio_mvc.ViewModels.Project;
 
@@ -14,7 +14,7 @@ public class ProjectService : IProjectService
         var projects = await _prjApi.GetAllProjectsAsync();
         return projects.Select(MapToVm).ToList();
     }
-    public async Task<ProjectViewModel?> GetProjectById(int id)
+    public async Task<ProjectViewModel?> GetProjectById(long id)
     {
         var project = await _prjApi.GetProjectByIdAsync(id);
 
@@ -37,12 +37,13 @@ public class ProjectService : IProjectService
             Title= dto.Title,
             ShortDescription = dto.ShortDescription,
             LongDescription = dto.LongDescription,
+            ProjectDemonstration = dto.ProjectDemonstration,
             ThumbnailImageUrl = dto.ThumbnailImageUrl,
             GithubUrl = dto.GithubUrl,
             LiveDemoUrl = dto.LiveDemoUrl,
-            CreatedAt = dto.CreatedAt,
+            CreatedAtUtc = dto.CreatedAtUtc,
             IsFeatured = dto.IsFeatured,
-            ScreenshotUrls = dto.ScreenshotUrls,
+            Screenshots = dto.Screenshots,
             Skills = dto.Skills,
             Technologies = dto.Technologies
         };

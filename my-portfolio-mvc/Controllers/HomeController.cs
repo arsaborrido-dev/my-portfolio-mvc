@@ -12,14 +12,17 @@ public class HomeController : Controller
     private readonly IProjectService _prjSrvc;
     private readonly ISkillService _skillSrvc;
     private readonly IContactService _contactSrvc;
+    private readonly ITechnologyService _technologySrvc;
     public HomeController(
         IProjectService prjSrvc, 
         ISkillService skillSrvc,
-        IContactService contactSrvc)
+        IContactService contactSrvc,
+        ITechnologyService technologySrvc)
     {
         _prjSrvc = prjSrvc;
         _skillSrvc = skillSrvc;
         _contactSrvc = contactSrvc;
+        _technologySrvc = technologySrvc;
     }
     public async Task<IActionResult> Index()
     {
@@ -27,10 +30,16 @@ public class HomeController : Controller
         {
             FeaturedProjects = await _prjSrvc.GetFeaturedProjects(),
             Skills = await _skillSrvc.GetAllSkillsAsync(),
+            Technologies = await _technologySrvc.GetAllTechnologies(),
             ContactMessage = new ContactMessageViewModel()
         };
 
         return View(vm);
+    }
+
+    public async Task<IActionResult> Privacy()
+    {       
+        return View();
     }
 
     [HttpPost]

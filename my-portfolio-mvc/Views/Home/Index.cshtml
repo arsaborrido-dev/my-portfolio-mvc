@@ -1,4 +1,4 @@
-﻿@using my_portfolio_mvc.ViewModels.Home;
+@using my_portfolio_mvc.ViewModels.Home;
 
 @model HomeViewModel
 
@@ -36,9 +36,9 @@
                     </h1>
 
                     <p class="hero-text">
-                        I build reliable software, APIs, integrations, and
-                        data solutions with a focus on simplicity,
-                        performance, and maintainability.
+                        Software developer focused on backend systems, APIs, and data-driven applications using C# and the Microsoft 
+                        .NET ecosystem. I work with clean architecture, reliable integrations, and maintainable solutions that support 
+                        real-world business operations.
                     </p>
 
                     <div class="d-flex flex-wrap gap-2">
@@ -91,9 +91,9 @@
                 01 — About
             </span>
 
-            <h2 class="section-title">
+            <h1 class="section-title">
                 Building practical solutions with technology.
-            </h2>
+            </h1>
 
         </div>
 
@@ -107,22 +107,19 @@
                 <div class="about-text">
 
                     <p>
-                        Hello, I'm Chao. I'm a software developer who
-                        enjoys turning business requirements into
-                        practical, reliable technology solutions.
+                        I’m a software developer with over 10 years of experience building applications, 
+                        APIs, data integrations, ETL processes, and reporting solutions, primarily within the Microsoft ecosystem.
                     </p>
 
                     <p>
-                        My experience includes application development,
-                        data integration, reporting, APIs, and backend
-                        systems. I value clean code, thoughtful design,
-                        and solutions that are easy to maintain.
+                        My experience includes C#, ASP.NET Core, SQL, SSIS, SSRS, backend development, and service-based applications 
+                        that support day-to-day business operations. I value clear architecture, maintainable code, reliable systems, 
+                        and practical engineering practices.
                     </p>
 
                     <p>
-                        This portfolio is designed to grow alongside my
-                        projects and can later be connected directly to
-                        my own APIs.
+                        This portfolio showcases projects that reflect my technical experience and interests, including backend systems, 
+                        APIs, data-driven applications, and the technologies I continue to explore and develop.
                     </p>
 
                 </div>
@@ -143,7 +140,7 @@
                             <strong>Focus</strong>
 
                             <span>
-                                Backend & Web Development
+                                Backend & Web Development — Building applications and APIs using .NET
                             </span>
 
                         </div>
@@ -157,7 +154,7 @@
                             <strong>Specialty</strong>
 
                             <span>
-                                APIs & Data Integration
+                                APIs & Data Integration — Working with SQL Server, SSIS, and ETL processes
                             </span>
 
                         </div>
@@ -171,7 +168,7 @@
                             <strong>Approach</strong>
 
                             <span>
-                                Simple & Maintainable
+                                Simple, maintainable, and aligned with standard software engineering principles
                             </span>
 
                         </div>
@@ -185,7 +182,7 @@
                             <strong>Portfolio</strong>
 
                             <span>
-                                Continuously Evolving
+                                Continually improving and expanding over time
                             </span>
 
                         </div>
@@ -217,20 +214,22 @@
             </h2>
 
             <p class="section-description">
-                Technologies and tools I use to build applications,
-                APIs, integrations, and data solutions.
+                Tools and technologies I use to build applications, APIs, 
+                integrations, and data solutions.
             </p>
 
         </div>
 
 
-        <div class="row g-3">
+        @* <div class="row g-3"> *@
+        <div class="skills-container row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-5 g-2">
 
             @if (Model?.Skills != null && Model.Skills.Any())
             {
                 foreach (var skill in Model.Skills)
                 {
-                    <div class="col-12 col-sm-6 col-lg-4 col-xl">
+                    @* <div class="col-12 col-sm-6 col-lg-4 col-xl"> *@
+                    <div class="skill-wrapper col">
 
                         <div class="skill-card h-100">
 
@@ -247,6 +246,37 @@
 
                     <div class="loading">
                         No skills available yet.
+                    </div>
+
+                </div>
+            }
+
+        </div>
+
+        <div class="technologies-container row row-cols-2 row-cols-sm-3 row-cols-lg-4 row-cols-xl-5 g-2">
+
+            @if (Model?.Technologies != null && Model.Technologies.Any())
+            {
+                foreach (var technology in Model.Technologies)
+                {
+                    @* <div class="col-12 col-sm-6 col-lg-4 col-xl"> *@
+                    <div class="technology-wrapper col">
+
+                        <div class="technology-card h-100">
+
+                            @technology.Name
+
+                        </div>
+
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="col-12">
+
+                    <div class="loading">
+                        No technologies available yet.
                     </div>
 
                 </div>
@@ -297,16 +327,34 @@
                             @if (!string.IsNullOrWhiteSpace(
                                 project.ThumbnailImageUrl))
                             {
-                                <img src="@project.ThumbnailImageUrl"
+                                <a asp-controller="Project"
+                                    asp-action="ProjectDetail"
+                                    asp-route-id="@project.Id"
+                                    class="text-decoration-none">
+
+                                    <img src="@project.ThumbnailImageUrl"
                                      alt="@project.Title"
                                      class="project-thumb" />
+
+                                </a>
+                                
                             }
 
-                            <h3>
-                                @project.Title
+                            <h3 class="project-card-title">
+                                <a asp-controller="Project"
+                                    asp-action="ProjectDetail"
+                                    asp-route-id="@project.Id"
+                                    class="text-decoration-none">
+
+                                    @project.Title
+
+                                </a>
                             </h3>
 
-                            <p>
+
+                            
+
+                            <p class="project-card-title-description">
                                 @project.ShortDescription
                             </p>
 
@@ -390,7 +438,7 @@
 
                     <p class="contact-text">
                         Interested in working together or simply
-                        want to say hello? Feel free to reach out.
+                        want to say hello?<br>Feel free to reach out.
                     </p>
 
                 </div>
@@ -450,7 +498,7 @@
                     @Html.AntiForgeryToken()
                     
                     <div class="mb-3">
-                        <div class="form-group">
+                        <div class="form-group mb-3">
 
                             <label for="contact_name"
                                    class="form-label">
@@ -470,7 +518,7 @@
 
 
                     <div class="mb-3">
-                        <div class="form-group">
+                        <div class="form-group mb-3">
 
                             <label for="contact_email"
                                    class="form-label">
@@ -491,7 +539,7 @@
 
 
                     <div class="mb-4">
-                        <div class="form-group">
+                        <div class="form-group mb-3">
 
                             <label for="contact_message"
                                    class="form-label">

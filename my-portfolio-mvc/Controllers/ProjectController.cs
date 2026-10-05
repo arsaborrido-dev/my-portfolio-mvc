@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using my_portfolio_mvc.Security;
 using my_portfolio_mvc.Services.Interfaces;
 using my_portfolio_mvc.ViewModels;
 using my_portfolio_mvc.ViewModels.Project;
@@ -16,11 +17,15 @@ public class ProjectController : Controller
     //    return View(projects); // passes List<ProjectsViewModel> to View
     //}
 
-    public async Task<IActionResult> ProjectDetail(int id)
+    public async Task<IActionResult> ProjectDetail(long id)
     {
         var project = await _prjSrvc.GetProjectById(id);
         if (project == null)
-            return NotFound();            
+            return NotFound();
+
+        project.ShortDescription = HtmlSanitizerHelper.Sanitize(project.ShortDescription);
+        project.LongDescription = HtmlSanitizerHelper.Sanitize(project.LongDescription);
+        project.ProjectDemonstration = HtmlSanitizerHelper.Sanitize(project.ProjectDemonstration);
 
         return View(project);
     }
@@ -35,7 +40,7 @@ public class ProjectController : Controller
             allProjects = allProjects.Where(e => e.Title.ToLower().Contains(search.ToLower())).ToList();
 
         // PAGINATION
-        int pageSize = 1;
+        int pageSize = 5;
         var count = allProjects.Count();
         var pagedProjects = allProjects
             .Skip((page - 1) * pageSize)

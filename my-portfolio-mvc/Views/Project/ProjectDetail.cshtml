@@ -1,16 +1,20 @@
-﻿@using my_portfolio_mvc.ViewModels.Project;
+@using my_portfolio_mvc.ViewModels.Project;
 
 @model ProjectViewModel
 
 @{
+   
     ViewData["Title"] = Model.Title;
 
-    var screenshots = Model.ScreenshotUrls?
-        .Where(x => !string.IsNullOrWhiteSpace(x))
+    var screenshots = Model.Screenshots
+        .Where(x => !string.IsNullOrWhiteSpace(x.ImageUrl))
         .Take(6)
-        .ToList() ?? new List<string>();
+        .ToList();
 
-
+        
+    var mainImageUrl = !string.IsNullOrWhiteSpace(Model.ThumbnailImageUrl)
+        ? Model.ThumbnailImageUrl
+        : screenshots.FirstOrDefault()?.ImageUrl;
 }
 
 <section class="project-detail py-5 py-lg-6">
@@ -22,7 +26,7 @@
 
         <div class="project-detail-header mb-5">
 
-            <a asp-controller="Project"
+            @* <a asp-controller="Project"
                asp-action="ProjectsList"
                class="project-back d-inline-flex align-items-center gap-2 text-decoration-none mb-5">
 
@@ -30,15 +34,19 @@
 
                 Back to Projects
 
-            </a>
-
+            </a> *@
+            <a asp-controller="Project"
+                asp-action="ProjectsList"
+                class="project-back text-decoration-none">
+                ← Back to all projects                
+            </a>  
 
             <div class="project-detail-label mb-3">
                 Project
             </div>
 
 
-            <h1 class="project-detail-title mb-4">
+            <h1 class="project-detail-title mb-4">            
                 @Model.Title
             </h1>
 
@@ -51,80 +59,141 @@
 
 
         <!-- =====================================================
- PROJECT VISUALS
- Main Image + Screenshot Gallery
- ===================================================== -->
-        @if (!string.IsNullOrWhiteSpace(Model.ThumbnailImageUrl) ||
-             screenshots.Any())
+             VISUAL WORKSPACE
+             ===================================================== -->
+        @if (!string.IsNullOrWhiteSpace(mainImageUrl) || screenshots.Any())
         {
-            <div class="project-images-layout row g-5 align-items-stretch">
+            <section class="project-workspace mb-5" aria-label="Project visuals">
 
-                <!-- MAIN PROJECT IMAGE -->
-                <div class="col-lg-8">
+                <!-- MAIN IMAGE -->
+                <div class="project-stage">
 
-                    <div class="project-detail-image">
+                    @* <div class="project-stage-topline">
+                        <span>Primary view</span>
+                        <span>Interactive preview</span>
+                    </div> *@
 
-                        @if (!string.IsNullOrWhiteSpace(Model.ThumbnailImageUrl))
+                    <div class="project-main-frame">
+                        @if (!string.IsNullOrWhiteSpace(mainImageUrl))
                         {
                             <img id="main-project-image"
-                                 src="@Model.ThumbnailImageUrl"
+                                 src="@mainImageUrl"
                                  alt="@Model.Title project screenshot"
                                  loading="eager" />
                         }
                         else
                         {
-                            <div class="project-image-empty">
-                                <span>No images</span>
+                            <div class="project-image-empty-v2">
+                                No project imagery available
                             </div>
                         }
+                    </div>
 
+                    <div class="project-stage-caption">
+                        @* <span id="project-stage-caption">Selected frame</span> *@
+                        <span>Click a frame to explore</span>
+                    </div>
+
+                    <div class="project-detail-technologies">
+                        <!-- Technologies -->
+                        @* @if (Model.Technologies.Any()) *@
+                        @if (Model.Technologies != null && Model.Technologies.Any())               
+                        {
+                            <section class="project-detail-section">
+
+                                <span class="detail-section-label">
+                                    Technologies
+                                </span>
+
+                                @* <h2>
+                                    Built with
+                                </h2> *@
+                                <h1 class="project-detail-sub-title mb-4">            
+                                    Technologies used
+                                </h1>
+                                @* <div class="d-flex flex-wrap gap-2"> *@
+                                  <div class="row g-4 mb-0">
+
+                                    @foreach (var categoryGroup in Model.Technologies
+                                        .Where(t => !string.IsNullOrWhiteSpace(t.TechnologyCategory))
+                                        .GroupBy(t => t.TechnologyCategory)
+                                        .OrderBy(g => g.Key))
+                                    {
+                                        <div class="col-md-4">
+
+                                            <div class="project-detail-technology-category mb-1 text-muted">
+                                                @categoryGroup.Key
+                                            </div>
+
+                                            <ul class="list-unstyled mb-0">
+                                                @foreach (var technology in categoryGroup.OrderBy(t => t.Name))
+                                                {
+                                                    <li>
+                                                        <div class="technology-wrapper col">
+                                                            <div class="technology-card h-100">
+                                                                @technology.Name
+                                                            </div>
+                                                        </div>
+
+                                                    </li>
+                                                }
+                                            </ul>
+
+                                        </div>
+                                    }
+
+                                </div>
+
+
+
+                            </section>
+                        }
                     </div>
 
                 </div>
 
+                <!-- SCREENSHOT BROWSER -->
+                <aside class="project-frame-browser" aria-label="Project screenshots">
+                   
+                    @if (screenshots.Any())
+                    {
+                        <div class="project-frame-list">
+                            @for (var i = 0; i < screenshots.Count; i++)
+                            {
+                                var screenshot = screenshots[i];
 
-                <!-- SCREENSHOT GALLERY -->
-                <div class="col-lg-4">
+                                <button type="button"
+                                        class="project-frame-button @(i == 0 ? "active" : "")"
+                                        data-project-image="@screenshot.ImageUrl"
+                                        data-project-title="@Model.Title"
+                                        data-frame-number="@(i + 1)"
+                                        aria-label="View project screenshot @(i + 1)"
+                                        aria-pressed="@(i == 0 ? "true" : "false")">
 
-                    <div class="project-screenshots">
+                                    <span class="frame-number">
+                                        @((i + 1).ToString("00"))
+                                    </span>
 
-                        <div class="project-screenshots-header">
-                            Screenshots
-                        </div>
-
-                        @if (screenshots.Any())
-                        {
-                            <div class="project-screenshot-grid">
-
-                                @foreach (var screenshotUrl in screenshots)
-                                {
-                                    <button type="button"
-                                            class="project-screenshot-button"
-                                            data-project-image="@screenshotUrl"
-                                            data-project-title="@Model.Title"
-                                            aria-label="View project screenshot">
-
-                                        <img src="@screenshotUrl"
-                                             alt="@Model.Title screenshot"
+                                    <span class="frame-image">
+                                        <img src="@screenshot.ImageUrl"
+                                             alt="@Model.Title screenshot @(i + 1)"
                                              loading="lazy" />
+                                    </span>
 
-                                    </button>
-                                }
+                                </button>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="frame-browser-empty">
+                            No additional frames.
+                        </div>
+                    }
 
-                            </div>
-                        }
-                        else
-                        {
-                            <div class="project-screenshots-empty">
-                                <span>No images</span>
-                            </div>
-                        }
+                </aside>
 
-                    </div>
-
-                </div>
-
-            </div>
+            </section>
         }
 
 
@@ -140,7 +209,6 @@
 
             <main class="col-lg-8 project-detail-main">
 
-
                 <!-- Overview -->
 
                 <section class="project-detail-section">
@@ -149,49 +217,37 @@
                         Overview
                     </span>
 
-                    <h2>
+                    @* <h4>
                         About this project
-                    </h2>
+                    </h4> *@
+
+                    <h1 class="project-detail-sub-title mb-4">            
+                        About this project
+                    </h1>
 
                     <p>
-                        @Model.LongDescription
+                        @Html.Raw(Model.LongDescription)
+                        @* @Model.LongDescription *@
                     </p>
 
+                @* </section> *@
+
+               @*  <section class="project-detail-section">      *@               
+                   
+                    <div class="mt-4">
+                        <h1 class="project-detail-sub-title mb-4">            
+                            What This Project Demonstrates
+                        </h1>
+
+                        <p>
+                            @Html.Raw(Model.ProjectDemonstration)
+                            @* @Model.LongDescription *@
+                        </p>
+                    </div>
                 </section>
-
-
-                <!-- Technologies -->
-                @if (Model.Technologies != null &&
-                                 Model.Technologies.Any())
-                {
-                    <section class="project-detail-section">
-
-                        <span class="detail-section-label">
-                            Technologies
-                        </span>
-
-                        <h2>
-                            Built with
-                        </h2>
-
-                        <div class="d-flex flex-wrap gap-2">
-
-                            @foreach (var technology in Model.Technologies)
-                            {
-                                <span class="technology-item">
-                                    @technology
-                                </span>
-                            }
-
-                        </div>
-
-                    </section>
-                }
-
-
                 <!-- Skills -->
-                @if (Model.Skills != null &&
-                                 Model.Skills.Any())
+                @* @if (Model.Skills.Any()) *@
+                @* @if (Model.Skills != null && Model.Skills.Any())                
                 {
                     <section class="project-detail-section">
 
@@ -212,7 +268,7 @@
                                     <span class="project-skill-marker"></span>
 
                                     <span>
-                                        @skill
+                                        @skill.Name
                                     </span>
 
                                 </div>
@@ -221,7 +277,7 @@
                         </div>
 
                     </section>
-                }
+                } *@
 
             </main>
 
@@ -252,7 +308,7 @@
 
 
                         <!-- Created -->
-                        @if (Model.CreatedAt != default)
+                        @if (Model.CreatedAtUtc != default)
                         {
                             <div class="project-info-item">
 
@@ -261,7 +317,7 @@
                                 </span>
 
                                 <strong>
-                                    @Model.CreatedAt.ToString("MMMM yyyy")
+                                    @Model.CreatedAtUtc.ToString("MMMM yyyy")
                                 </strong>
 
                             </div>
@@ -336,7 +392,7 @@
 
                                         GitHub
 
-                                        <span>↗</span>
+                                        @* <span>↗</span> *@
 
                                     </a>
                                 }
@@ -349,7 +405,7 @@
 
                                         Proof
 
-                                        <span>↗</span>
+                                        @* <span>↗</span> *@
 
                                     </a>
                                     <input type="text"
@@ -378,7 +434,7 @@
 
         <div class="project-detail-footer">
 
-            <a asp-controller="Project"
+            @* <a asp-controller="Project"
                asp-action="ProjectsList"
                class="project-back">
 
@@ -388,8 +444,12 @@
 
                 Back to all projects
 
+            </a> *@
+            <a asp-controller="Project"
+                asp-action="ProjectsList"
+                class="project-back text-decoration-none">
+                ← Back to all projects                
             </a>
-
         </div>
 
     </div>
@@ -399,24 +459,21 @@
 @section Scripts {
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
 
-            const mainImage =
-                document.getElementById("main-project-image");
-
+            const mainImage = document.getElementById("main-project-image");
             const screenshotButtons =
-                document.querySelectorAll(
-                    ".project-screenshot-button"
-                );
+                document.querySelectorAll(".project-frame-button");
+            const stageCaption =
+                document.getElementById("project-stage-caption");
 
             if (!mainImage || !screenshotButtons.length) {
                 return;
             }
 
+            screenshotButtons.forEach(function (button) {
 
-            screenshotButtons.forEach(function(button) {
-
-                button.addEventListener("click", function() {
+                button.addEventListener("click", function () {
 
                     const imageUrl =
                         button.getAttribute("data-project-image");
@@ -424,29 +481,42 @@
                     const projectTitle =
                         button.getAttribute("data-project-title");
 
+                    const frameNumber =
+                        button.getAttribute("data-frame-number");
+
                     if (!imageUrl) {
                         return;
                     }
 
+                    mainImage.style.opacity = "0";
 
-                    // Change main image
-                    mainImage.src = imageUrl;
+                    window.setTimeout(function () {
+                        mainImage.src = imageUrl;
 
-                    if (projectTitle) {
-                        mainImage.alt =
-                            projectTitle + " project screenshot";
-                    }
+                        if (projectTitle) {
+                            mainImage.alt =
+                                projectTitle +
+                                " project screenshot " +
+                                (frameNumber || "");
+                        }
+
+                        mainImage.style.opacity = "1";
+                    }, 120);
 
 
-                    // Update active thumbnail
-                    screenshotButtons.forEach(function(item) {
-
+                    screenshotButtons.forEach(function (item) {
                         item.classList.remove("active");
-
+                        item.setAttribute("aria-pressed", "false");
                     });
 
                     button.classList.add("active");
+                    button.setAttribute("aria-pressed", "true");
 
+                    // if (stageCaption && frameNumber) {
+                    //     stageCaption.textContent =
+                    //         "Selected frame " +
+                    //         frameNumber.padStart(2, "0");
+                    // }
                 });
 
             });

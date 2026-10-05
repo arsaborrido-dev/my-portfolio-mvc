@@ -1,5 +1,5 @@
 ﻿using my_portfolio_mvc.Api.Interfaces;
-using my_portfolio_mvc.Api.Models;
+using my_portfolio_mvc.Api.Models.Skill;
 using my_portfolio_mvc.ViewModels.Skill;
 using static System.Net.WebRequestMethods;
 
@@ -13,15 +13,15 @@ public class SkillApiClient : ISkillApiService
     //------------------------
     // SKILLS
     //------------------------
-    public async Task<List<SkillDto>> GetAllSkillsAsync()
+    public async Task<List<SkillsListDto>> GetAllSkillsAsync()
     {
-        var allSkills = await _httpClient.GetFromJsonAsync<List<SkillDto>>(
+        var allSkills = await _httpClient.GetFromJsonAsync<List<SkillsListDto>>(
             "api/skills"
         );
 
-        return allSkills ?? new List<SkillDto>();
+        return allSkills ?? new List<SkillsListDto>();
     }
-    public async Task<SkillDto?> GetSkillByIdAsync(int id)
+    public async Task<SkillDto?> GetSkillByIdAsync(long id)
     {
         var skill = await _httpClient.GetFromJsonAsync<SkillDto>($"api/skills/{id}");
         return skill;

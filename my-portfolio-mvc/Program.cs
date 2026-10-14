@@ -12,7 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 
 var authApiUrl = builder.Configuration["AuthApi:BaseUrl"] ?? "http://authapi:8080";
 
-//this will avoid Data Protection key problem - Microsoft.AspNetCore.Antiforgery.AntiforgeryValidationException: The antiforgery token could not be decrypted.
 builder.Services
     .AddDataProtection()
     .PersistKeysToFileSystem(
@@ -29,13 +28,6 @@ builder.Services.AddTransient<AutoRefreshHandler>();
 builder.Services.AddHttpClient<CaptchaService>()
     .AddHttpMessageHandler<LoggingHandler>();
 
-//builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(c =>
-//{
-//    c.BaseAddress = new Uri(authApiUrl);
-//    c.Timeout = TimeSpan.FromSeconds(10);
-//})
-//    .AddHttpMessageHandler<LoggingHandler>();
-////.AddHttpMessageHandler<TokenRefreshHandler>();
 
 builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
 {

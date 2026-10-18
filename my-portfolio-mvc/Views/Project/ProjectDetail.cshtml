@@ -20,9 +20,7 @@
 <section class="project-detail py-5 py-lg-6">
     <div class="container">
 
-        <!-- =====================================================
-         PROJECT HEADER
-         ===================================================== -->
+         @* PROJECT HEADER *@
 
         <div class="project-detail-header mb-5">
 
@@ -57,10 +55,8 @@
 
         </div>
 
+        @* VISUAL WORKSPACE *@
 
-        <!-- =====================================================
-             VISUAL WORKSPACE
-             ===================================================== -->
         @if (!string.IsNullOrWhiteSpace(mainImageUrl) || screenshots.Any())
         {
             <section class="project-workspace mb-5" aria-label="Project visuals">
@@ -196,16 +192,9 @@
             </section>
         }
 
+        @* PROJECT CONTENT *@
 
-        <!-- =====================================================
-         PROJECT CONTENT
-         ===================================================== -->
-
-        <div class="row g-5 g-xl-6 align-items-start">
-
-            <!-- =================================================
-             MAIN CONTENT
-             ================================================= -->
+        <div class="row g-5 g-xl-6 align-items-start">        
 
             <main class="col-lg-8 project-detail-main">
 
@@ -280,11 +269,6 @@
                 } *@
 
             </main>
-
-
-            <!-- =================================================
-             PROJECT INFORMATION SIDEBAR
-             ================================================= -->
 
             <aside class="col-lg-4">
 
@@ -426,11 +410,6 @@
             </aside>
 
         </div>
-
-
-        <!-- =====================================================
-         PROJECT FOOTER NAVIGATION
-         ===================================================== -->
 
         <div class="project-detail-footer">
 

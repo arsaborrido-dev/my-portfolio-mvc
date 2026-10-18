@@ -8,9 +8,56 @@ using my_portfolio_mvc.Security.Captcha;
 using my_portfolio_mvc.Services.Implementations;
 using my_portfolio_mvc.Services.Interfaces;
 
+
+//-----------------------------------------------------------------------------------------//
+//  SERVICES REGISTRATION
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_//
+
 var builder = WebApplication.CreateBuilder(args);
 
-var authApiUrl = builder.Configuration["AuthApi:BaseUrl"] ?? "http://authapi:8080";
+//var authApiUrl = builder.Configuration["AuthApi:BaseUrl"] ?? "http://authapi:8080";
+var authApiUrl = builder.Configuration["AuthApi:BaseUrl"];
+
+if (string.IsNullOrWhiteSpace(authApiUrl))
+{
+    if (builder.Environment.IsDevelopment())
+    {
+        authApiUrl = "http://authapi:8080";
+    }
+    else
+    {
+        throw new InvalidOperationException(
+            "Missing required configuration: AuthApi:BaseUrl.");
+    }
+}
+
+if (!Uri.TryCreate(authApiUrl, UriKind.Absolute, out var authApiUri))
+{
+    throw new InvalidOperationException(
+        "AuthApi:BaseUrl must be a valid absolute URL.");
+}
+
+if (builder.Environment.IsDevelopment())
+{
+    // Allow HTTP for the local Docker network.
+    var isLocalDockerUrl =
+        authApiUri.Scheme == Uri.UriSchemeHttp &&
+        authApiUri.Host == "authapi" &&
+        authApiUri.Port == 8080;
+
+    if (!isLocalDockerUrl &&
+        authApiUri.Scheme != Uri.UriSchemeHttps)
+    {
+        throw new InvalidOperationException(
+            "AuthApi:BaseUrl must use HTTPS, except for " +
+            "the permitted local Docker URL.");
+    }
+}
+else if (authApiUri.Scheme != Uri.UriSchemeHttps)
+{
+    throw new InvalidOperationException(
+        "AuthApi:BaseUrl must use HTTPS outside Development.");
+}
 
 builder.Services
     .AddDataProtection()
@@ -25,9 +72,10 @@ builder.Services.AddHttpContextAccessor();
 builder.Services.AddTransient<LoggingHandler>();
 builder.Services.AddTransient<AutoRefreshHandler>();
 
-builder.Services.AddHttpClient<CaptchaService>()
+//builder.Services.AddHttpClient<CaptchaService>()
+//    .AddHttpMessageHandler<LoggingHandler>();
+builder.Services.AddHttpClient<ICaptchaService, CaptchaService>()
     .AddHttpMessageHandler<LoggingHandler>();
-
 
 builder.Services.AddHttpClient<IAuthApiClient, AuthApiClient>(client =>
 {
@@ -84,12 +132,20 @@ builder.Services.AddScoped<IProjectService, ProjectService>();
 builder.Services.AddScoped<ISkillService, SkillService>();
 builder.Services.AddScoped<ITechnologyService, TechnologyService>();
 builder.Services.AddScoped<IContactService, ContactService>();
-builder.Services.AddScoped<ICaptchaService, CaptchaService>();
+//builder.Services.AddScoped<ICaptchaService, CaptchaService>();
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
+//-----------------------------------------------------------------------------------------//
+//  PROGRAM PIPELINE
+//_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_/_//
+
 var app = builder.Build();
+
+//check validators here (urls)
+var logger = app.Services.GetRequiredService<ILogger<Program>>();
+ConfigurationValidator.Validate(builder.Configuration, logger, app.Environment);
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
@@ -102,6 +158,7 @@ if (!app.Environment.IsDevelopment())
 app.UseHttpsRedirection();
 app.UseRouting();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapStaticAssets();

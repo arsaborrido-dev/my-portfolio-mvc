@@ -6,5 +6,4 @@ public class ContactMessageDto
     public string Email { get; set; } = string.Empty;
     public string Message { get; set; } = string.Empty;
     public string CaptchaToken { get; set; } = string.Empty;
-    //public string? IpAddress { get; set; } = string.Empty;
 }

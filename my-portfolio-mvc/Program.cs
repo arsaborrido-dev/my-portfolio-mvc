@@ -37,6 +37,29 @@ if (!Uri.TryCreate(authApiUrl, UriKind.Absolute, out var authApiUri))
         "AuthApi:BaseUrl must be a valid absolute URL.");
 }
 
+//if (builder.Environment.IsDevelopment())
+//{
+//    // Allow HTTP for the local Docker network.
+//    var isLocalDockerUrl =
+//        authApiUri.Scheme == Uri.UriSchemeHttp &&
+//        authApiUri.Host == "authapi" &&
+//        authApiUri.Port == 8080;
+
+//    if (!isLocalDockerUrl &&
+//        authApiUri.Scheme != Uri.UriSchemeHttps)
+//    {
+//        throw new InvalidOperationException(
+//            "AuthApi:BaseUrl must use HTTPS, except for " +
+//            "the permitted local Docker URL.");
+//    }
+//}
+//else if (authApiUri.Scheme != Uri.UriSchemeHttps)
+//{
+//    throw new InvalidOperationException(
+//        "AuthApi:BaseUrl must use HTTPS outside Development.");
+//}
+
+
 if (builder.Environment.IsDevelopment())
 {
     // Allow HTTP for the local Docker network.
@@ -53,10 +76,23 @@ if (builder.Environment.IsDevelopment())
             "the permitted local Docker URL.");
     }
 }
-else if (authApiUri.Scheme != Uri.UriSchemeHttps)
+else
 {
-    throw new InvalidOperationException(
-        "AuthApi:BaseUrl must use HTTPS outside Development.");
+    // Allow HTTP only for the known Railway private service.
+    var isRailwayPrivateUrl =
+        authApiUri.Scheme == Uri.UriSchemeHttp &&
+        authApiUri.Host.Equals(
+            "threedeeeeecentralauthservice.railway.internal",
+            StringComparison.OrdinalIgnoreCase) &&
+        authApiUri.Port == 8080;
+
+    if (!isRailwayPrivateUrl &&
+        authApiUri.Scheme != Uri.UriSchemeHttps)
+    {
+        throw new InvalidOperationException(
+            "AuthApi:BaseUrl must use HTTPS, except for " +
+            "the permitted Railway private service URL.");
+    }
 }
 
 builder.Services

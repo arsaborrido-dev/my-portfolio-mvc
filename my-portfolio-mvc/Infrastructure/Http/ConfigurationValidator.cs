@@ -20,23 +20,56 @@ public class ConfigurationValidator
                 $"{key} must be a valid absolute URL.");
         }
 
+        //var isHttps = uri.Scheme == Uri.UriSchemeHttps;
+
+        //// Permit HTTP only for the expected local Docker endpoint.
+        //var isLocalDevelopmentHttp =
+        //    environment.IsDevelopment() &&
+        //    uri.Scheme == Uri.UriSchemeHttp &&
+        //    uri.Host == "authapi" &&
+        //    uri.Port == 8080;
+
+        //if (!isHttps && !isLocalDevelopmentHttp)
+        //{
+        //    logger.LogError(
+        //        "Invalid URL scheme for configuration key '{Key}'.",
+        //        key);
+
+        //    throw new InvalidOperationException(
+        //        $"{key} must use HTTPS, except for the permitted local Development endpoint.");
+        //}
+
         var isHttps = uri.Scheme == Uri.UriSchemeHttps;
 
-        // Permit HTTP only for the expected local Docker endpoint.
+        // Permit HTTP for the expected local Docker endpoint.
         var isLocalDevelopmentHttp =
             environment.IsDevelopment() &&
             uri.Scheme == Uri.UriSchemeHttp &&
-            uri.Host == "authapi" &&
+            uri.Host.Equals(
+                "authapi",
+                StringComparison.OrdinalIgnoreCase) &&
             uri.Port == 8080;
 
-        if (!isHttps && !isLocalDevelopmentHttp)
+        // Permit HTTP for the expected Railway private endpoint.
+        var isRailwayPrivateHttp =
+            !environment.IsDevelopment() &&
+            uri.Scheme == Uri.UriSchemeHttp &&
+            uri.Host.Equals(
+                "threedeeeeecentralauthservice.railway.internal",
+                StringComparison.OrdinalIgnoreCase) &&
+            uri.Port == 8080;
+
+        if (!isHttps &&
+            !isLocalDevelopmentHttp &&
+            !isRailwayPrivateHttp)
         {
             logger.LogError(
-                "Invalid URL scheme for configuration key '{Key}'.",
+                "Invalid URL scheme or endpoint for configuration key '{Key}'.",
                 key);
 
             throw new InvalidOperationException(
-                $"{key} must use HTTPS, except for the permitted local Development endpoint.");
+                $"{key} must use HTTPS, except for the permitted " +
+                "local Development and Railway private endpoints.");
         }
 
         logger.LogInformation(

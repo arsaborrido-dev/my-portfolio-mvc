@@ -10,13 +10,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="wwwroot\images\projects\2\**" />
-    <Content Remove="wwwroot\images\projects\2\**" />
-    <EmbeddedResource Remove="wwwroot\images\projects\2\**" />
-    <None Remove="wwwroot\images\projects\2\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="HtmlSanitizer" Version="9.2.1039" />
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.24.1-preview.1" />
   </ItemGroup>

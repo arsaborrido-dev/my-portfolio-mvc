@@ -27,14 +27,28 @@ public class ProjectService : IProjectService
     public async Task<List<ProjectViewModel>> GetFeaturedProjects()
     {
         var featuredProjects = await _prjApi.GetFeaturedProjectsAsync();
-        return featuredProjects.Select(MapToVm).ToList(); ;
+        return featuredProjects.Select(MapToVm).ToList();
+    }
+
+    public async Task<bool> UpdateProjectAsync(ProjectViewModel vm, CancellationToken cancellationToken = default)
+    {
+        return await _prjApi.UpdateProjectAsync(vm, cancellationToken);
+    }
+
+    public async Task<ProjectDto> AddProjectAsync(ProjectViewModel vm, CancellationToken cancellationToken = default)
+    {
+        return await _prjApi.AddProjectAsync(vm, cancellationToken);
+    }
+    public async Task<bool> DeleteProjectAsync(long id, CancellationToken cancellationToken = default)
+    {
+        return await _prjApi.DeleteProjectAsync(id, cancellationToken);
     }
     private static ProjectViewModel MapToVm(ProjectDto dto)
     {
         return new ProjectViewModel
         {
             Id = dto.Id,
-            Title= dto.Title,
+            Title = dto.Title,
             ShortDescription = dto.ShortDescription,
             LongDescription = dto.LongDescription,
             ProjectDemonstration = dto.ProjectDemonstration,

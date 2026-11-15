@@ -65,6 +65,9 @@ secrets/
 # Temporary files
 *.tmp
 *.temp
+* - Copy.json
 
 # Node modules (if using frontend)
 node_modules/
+
+/publish-check/

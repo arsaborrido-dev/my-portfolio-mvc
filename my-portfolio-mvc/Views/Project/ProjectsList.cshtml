@@ -40,6 +40,8 @@
                   asp-action="ProjectsList"
                   class="projects-search flex-grow-1">
 
+                @Html.AntiForgeryToken()
+
                 <div class="projects-search-wrapper input-group">
 
                     <input type="text"

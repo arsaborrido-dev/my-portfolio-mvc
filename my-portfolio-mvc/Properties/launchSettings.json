@@ -4,9 +4,7 @@
       "commandName": "Project",
       "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development",
-        //"AuthServer__Authority": "http://localhost:8081",
-        //"AuthApi__BaseUrl": "http://localhost:8081"
+        "ASPNETCORE_ENVIRONMENT": "Development"
       },
       "dotnetRunMessages": true,
       "applicationUrl": "http://localhost:5172"

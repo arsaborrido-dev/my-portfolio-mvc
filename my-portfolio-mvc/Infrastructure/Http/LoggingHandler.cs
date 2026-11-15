@@ -12,35 +12,44 @@ public class LoggingHandler : DelegatingHandler
         _logger = logger;
         _options = options.Value;
     }
-    protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken ct)
+
+    protected override async Task<HttpResponseMessage> SendAsync(
+        HttpRequestMessage request,
+        CancellationToken ct)
     {
-        // DON'T read request.Content - it breaks the stream
-        _logger.LogInformation("-> {Method} {Url}", request.Method, request.RequestUri);
+        var path = request.RequestUri?.AbsolutePath ?? "(unknown path)";
+
+        _logger.LogInformation(
+            "LoggingHandler: BEFORE base.SendAsync - {Method} {Path}",
+            request.Method,
+            path);
 
         var response = await base.SendAsync(request, ct);
 
+        _logger.LogInformation(
+            "LoggingHandler: AFTER base.SendAsync - Status: {StatusCode}",
+            (int)response.StatusCode);
+
         var shouldLogBody = ShouldLogResponseBody(request, response);
 
-        // Only log body if not success or debug
         if (!response.IsSuccessStatusCode)
         {
-
             if (shouldLogBody)
             {
                 var body = await ReadResponseBodyAsync(response, ct);
 
                 _logger.LogWarning(
-                    "<- {Status} {Url} Body: {Body}",
+                    "<- {Status} {Path} Body: {Body}",
                     (int)response.StatusCode,
-                    request.RequestUri,
+                    path,
                     body);
             }
             else
             {
                 _logger.LogWarning(
-                    "<- {Status} {Url}",
+                    "<- {Status} {Path}",
                     (int)response.StatusCode,
-                    request.RequestUri);
+                    path);
             }
         }
         else
@@ -50,23 +59,23 @@ public class LoggingHandler : DelegatingHandler
                 var body = await ReadResponseBodyAsync(response, ct);
 
                 _logger.LogInformation(
-                    "<- {Status} {Url} Body: {Body}",
+                    "<- {Status} {Path} Body: {Body}",
                     (int)response.StatusCode,
-                    request.RequestUri,
+                    path,
                     body);
             }
             else
             {
                 _logger.LogInformation(
-                    "<- {Status} {Url}",
+                    "<- {Status} {Path}",
                     (int)response.StatusCode,
-                    request.RequestUri);
+                    path);
             }
-            
         }
 
         return response;
     }
+
     private bool ShouldLogResponseBody(
         HttpRequestMessage request,
         HttpResponseMessage response)

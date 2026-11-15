@@ -1,5 +1,6 @@
 ﻿namespace my_portfolio_mvc.Infrastructure.Http;
 
+
 public class ConfigurationValidator
 {
     public static void Validate(
@@ -20,29 +21,22 @@ public class ConfigurationValidator
                 $"{key} must be a valid absolute URL.");
         }
 
-        //var isHttps = uri.Scheme == Uri.UriSchemeHttps;
-
-        //// Permit HTTP only for the expected local Docker endpoint.
-        //var isLocalDevelopmentHttp =
-        //    environment.IsDevelopment() &&
-        //    uri.Scheme == Uri.UriSchemeHttp &&
-        //    uri.Host == "authapi" &&
-        //    uri.Port == 8080;
-
-        //if (!isHttps && !isLocalDevelopmentHttp)
-        //{
-        //    logger.LogError(
-        //        "Invalid URL scheme for configuration key '{Key}'.",
-        //        key);
-
-        //    throw new InvalidOperationException(
-        //        $"{key} must use HTTPS, except for the permitted local Development endpoint.");
-        //}
-
         var isHttps = uri.Scheme == Uri.UriSchemeHttps;
 
-        // Permit HTTP for the expected local Docker endpoint.
-        var isLocalDevelopmentHttp =
+        // MVC running locally in Visual Studio, calling AuthApi in Docker.
+        var isLocalHostDevelopmentHttp =
+            environment.IsDevelopment() &&
+            uri.Scheme == Uri.UriSchemeHttp &&
+            (uri.Host.Equals(
+                "localhost",
+                StringComparison.OrdinalIgnoreCase) ||
+             uri.Host.Equals(
+                "127.0.0.1",
+                StringComparison.OrdinalIgnoreCase)) &&
+            uri.Port == 8081;
+
+        // MVC and AuthApi communicating inside Docker Compose.
+        var isLocalDockerDevelopmentHttp =
             environment.IsDevelopment() &&
             uri.Scheme == Uri.UriSchemeHttp &&
             uri.Host.Equals(
@@ -50,7 +44,7 @@ public class ConfigurationValidator
                 StringComparison.OrdinalIgnoreCase) &&
             uri.Port == 8080;
 
-        // Permit HTTP for the expected Railway private endpoint.
+        // AuthApi's private Railway endpoint.
         var isRailwayPrivateHttp =
             !environment.IsDevelopment() &&
             uri.Scheme == Uri.UriSchemeHttp &&
@@ -60,7 +54,8 @@ public class ConfigurationValidator
             uri.Port == 8080;
 
         if (!isHttps &&
-            !isLocalDevelopmentHttp &&
+            !isLocalHostDevelopmentHttp &&
+            !isLocalDockerDevelopmentHttp &&
             !isRailwayPrivateHttp)
         {
             logger.LogError(

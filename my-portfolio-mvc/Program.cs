@@ -183,7 +183,7 @@ builder.Services.AddHttpClient<IProjectApiClient, ProjectApiClient>(client =>
 {
     //client.BaseAddress = new Uri(builder.Configuration["AuthApi:BaseUrl"]!);
     client.BaseAddress = new Uri(authApiUrl);
-    client.Timeout = TimeSpan.FromSeconds(10);
+    client.Timeout = TimeSpan.FromSeconds(30);
 })
     .AddHttpMessageHandler<LoggingHandler>()
     .AddHttpMessageHandler<AccessTokenHandler>()

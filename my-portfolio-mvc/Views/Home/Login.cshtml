@@ -1,0 +1,54 @@
+﻿
+@using my_portfolio_mvc.ViewModels.Home;
+
+@model LoginViewModel
+
+<div class="row">
+    <div class="col-md-4">
+        
+        <form asp-action="Login" method="post">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
+
+            <div asp-validation-summary="All" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Password"></label>
+                <input asp-for="Password" class="form-control" />
+                <span asp-validation-for="Password" class="text-danger"></span>
+            </div>
+
+            <!-- CAPTCHA widget placeholder -->
+           @*  <div class="cf-turnstile"
+                    data-sitekey="0x4AAAAAAExxBiDW5MlG0Meu"
+                    data-callback="onCaptchaCompleted">
+            </div>
+ *@
+            @* <div class="mb-3">
+                <!-- Example: Cloudflare Turnstile or Google reCAPTCHA script + widget -->
+                <input asp-for="ContactMessage.CaptchaToken" 
+                        type="hidden"/>
+            </div> *@
+
+            <button type="submit" class="btn btn-primary">Login</button>
+                       
+            <a asp-controller="Home" asp-action="Register">Register</a>
+
+        </form>
+    </div>
+</div>
+
+ @section Scripts {
+
+    <partial name="_ValidationScriptsPartial" />
+
+    <!-- Add your CAPTCHA JS here and set model.CaptchaToken via JS -->
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
+}

@@ -171,18 +171,29 @@
                 <span id="current-year"></span>
 
                 <span class="footer-name">
-                    Chao | Saborrido
+                    @* <a class="nav-link text-dark" asp-controller="Home" asp-action="Login">Chao | Saborrido</a>   *@
+                    @* <a asp-controller="Home" asp-action="Login"> *@
+                        Chao | Saborrido
+                    @* </a> *@
+
+                    @* <form asp-controller="Home" asp-action="Logout" method="post">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-link">
+                            Logout
+                        </button>
+                    </form> *@
+
                 </span>.
 
                 All rights reserved.
             </p>
 
             <p class="mb-0">
-                <a asp-controller="Home"
+                @* <a asp-controller="Home"
                    asp-action="Privacy"
                    class="footer-privacy">
                     Privacy Policy
-                </a>
+                </a> *@
                 <span class="footer-separator">|</span>
                 Built with ASP.NET Core MVC.
             </p>
